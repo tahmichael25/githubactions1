@@ -1,0 +1,26 @@
+name: Deploy Static Website from AWS S3
+
+#Triggers Section
+on:
+  push:
+    branches:
+      - main  # Deploy on pushes to the 'main' branch
+
+#What we want to do Section
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest  #The code written in React js, will need an OS to be executed
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2 # Replace with your AWS region
+
+      - name: Deploy Static WebSite from S3
+        run: |
+          aws s3 sync . s3://github-action-bucket1 --delete
